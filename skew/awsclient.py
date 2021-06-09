@@ -42,12 +42,20 @@ class AWSClient(object):
         self._account_id = account_id
         self._has_credentials = False
         self.aws_creds = kwargs.get('aws_creds')
+        self._profile = None
+        self._external_id = None
+        self._role_arn = None
         if self.aws_creds is None:
             self.aws_creds = self._config['accounts'][account_id].get(
                 'credentials')
         if self.aws_creds is None:
             # no aws_creds, need profile to get creds from ~/.aws/credentials
-            self._profile = self._config['accounts'][account_id]['profile']
+            if 'profile' in self._config['accounts'][account_id]:
+                self._profile = self._config['accounts'][account_id]['profile']
+            elif 'role_arn' in self._config['accounts'][account_id]:
+                self._role_arn = self._config['accounts'][account_id]['role_arn']
+                if 'external_id' in self._config['accounts'][account_id]:
+                    self._external_id = self._config['accounts'][account_id]['external_id']
         self.placebo = kwargs.get('placebo')
         self.placebo_dir = kwargs.get('placebo_dir')
         self.placebo_mode = kwargs.get('placebo_mode', 'record')
@@ -69,12 +77,39 @@ class AWSClient(object):
     def profile(self):
         return self._profile
 
+    @property
+    def external_id(self):
+        return self._external_id
+
+    @property
+    def role_arn(self):
+        return self._role_arn
+
     def _create_client(self):
         if self.aws_creds:
             session = boto3.Session(**self.aws_creds)
-        else:
+        elif self.profile:
             session = boto3.Session(
                 profile_name=self.profile)
+        else:
+            # we assumpe that somewhere, somehow credentials are set and boto3 will use them
+            sts = boto3.client('sts')
+            if self.external_id:
+                assumed_role = sts.assume_role(
+                    RoleArn=self.role_arn,
+                    RoleSessionName='skew',
+                    ExternalId=self.external_id
+                )
+            else:
+                assumed_role = sts.assume_role(
+                    RoleArn=self.role_arn,
+                    RoleSessionName='skew'
+                )
+            session = boto3.Session(
+                aws_access_key_id=assumed_role['Credentials']['AccessKeyId'],
+                aws_secret_access_key=assumed_role['Credentials']['SecretAccessKey'],
+                aws_session_token=assumed_role['Credentials']['SessionToken']
+                )
         if self.placebo and self.placebo_dir:
             pill = self.placebo.attach(session, self.placebo_dir)
             if self.placebo_mode == 'record':
