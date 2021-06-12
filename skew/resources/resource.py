@@ -28,7 +28,10 @@ class Resource(object):
     def enumerate(cls, arn, region, account, resource_id=None, **kwargs):
         client = skew.awsclient.get_awsclient(
             cls.Meta.service, region, account, **kwargs)
-        config = kwargs['config']
+        if 'config' in kwargs:
+            config = kwargs['config']
+        else:
+            config = None
         kwargs = {}
         do_client_side_filtering = False
         if resource_id and resource_id != '*':

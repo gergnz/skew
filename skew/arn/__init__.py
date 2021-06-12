@@ -132,7 +132,7 @@ class Resource(ARNComponent):
 class Account(ARNComponent):
 
     def __init__(self, pattern, arn, **kwargs):
-        if 'config' in kwargs:
+        if 'config' in kwargs and kwargs['config'] is not None:
             self._accounts = kwargs['config']['accounts']
         else:
             self._accounts = get_config()['accounts']
@@ -261,7 +261,10 @@ class ARN(object):
         self.query = None
         self._components = None
         self.kwargs = kwargs
-        self._build_components_from_string(arn_string, kwargs['config'])
+        if 'config' in kwargs:
+            self._build_components_from_string(arn_string, kwargs['config'])
+        else:
+            self._build_components_from_string(arn_string, None)
 
     def __repr__(self):
         return ':'.join([str(c) for c in self._components])
