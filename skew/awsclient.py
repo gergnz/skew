@@ -36,7 +36,10 @@ def json_encoder(obj):
 class AWSClient(object):
 
     def __init__(self, service_name, region_name, account_id, **kwargs):
-        self._config = get_config()
+        if 'config' in kwargs:
+            self._config = kwargs['config']
+        else:
+            self._config = get_config()
         self._service_name = service_name
         self._region_name = region_name
         self._account_id = account_id

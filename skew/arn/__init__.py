@@ -28,7 +28,7 @@ DebugFmtString = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 
 class ARNComponent(object):
 
-    def __init__(self, pattern, arn):
+    def __init__(self, pattern, arn, **kwargs):
         self.pattern = pattern
         self._arn = arn
 
@@ -131,8 +131,11 @@ class Resource(ARNComponent):
 
 class Account(ARNComponent):
 
-    def __init__(self, pattern, arn):
-        self._accounts = get_config()['accounts']
+    def __init__(self, pattern, arn, **kwargs):
+        if 'config' in kwargs:
+            self._accounts = kwargs['config']['accounts']
+        else:
+            self._accounts = get_config()['accounts']
         super(Account, self).__init__(pattern, arn)
 
     def choices(self, context=None):
@@ -257,8 +260,8 @@ class ARN(object):
     def __init__(self, arn_string='arn:aws:*:*:*:*', **kwargs):
         self.query = None
         self._components = None
-        self._build_components_from_string(arn_string)
         self.kwargs = kwargs
+        self._build_components_from_string(arn_string, kwargs['config'])
 
     def __repr__(self):
         return ':'.join([str(c) for c in self._components])
@@ -286,13 +289,13 @@ class ARN(object):
         # add ch to logger
         log.addHandler(ch)
 
-    def _build_components_from_string(self, arn_string):
+    def _build_components_from_string(self, arn_string, config):
         if '|' in arn_string:
             arn_string, query = arn_string.split('|')
             self.query = jmespath.compile(query)
         pairs = zip_longest(
             self.ComponentClasses, arn_string.split(':', 5), fillvalue='*')
-        self._components = [c(n, self) for c, n in pairs]
+        self._components = [c(n, self, config=config) for c, n in pairs]
 
     @property
     def scheme(self):

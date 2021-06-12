@@ -28,6 +28,7 @@ class Resource(object):
     def enumerate(cls, arn, region, account, resource_id=None, **kwargs):
         client = skew.awsclient.get_awsclient(
             cls.Meta.service, region, account, **kwargs)
+        config = kwargs['config']
         kwargs = {}
         do_client_side_filtering = False
         if resource_id and resource_id != '*':
@@ -69,7 +70,7 @@ class Resource(object):
                     # resource ID we are looking for.
                     if not cls.filter(arn, resource_id, d):
                         continue
-                resources.append(cls(client, d, arn.query))
+                resources.append(cls(client, d, config, arn.query))
         return resources
 
     class Meta(object):

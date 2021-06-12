@@ -92,7 +92,7 @@ class AWSResource(Resource):
     def filter(cls, arn, resource_id, data):
         pass
 
-    def __init__(self, client, data, query=None):
+    def __init__(self, client, data, config, query=None):
         self._client = client
         self._query = query
         if data is None:
@@ -110,7 +110,7 @@ class AWSResource(Resource):
         if hasattr(self.Meta, 'dimension') and self.Meta.dimension:
             self._cloudwatch = skew.awsclient.get_awsclient(
                 'cloudwatch', self._client.region_name,
-                self._client.account_id)
+                self._client.account_id, config=config)
         self._metrics = None
         self._name = None
         self._date = None
