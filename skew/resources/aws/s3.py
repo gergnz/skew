@@ -59,8 +59,8 @@ class Bucket(AWSResource):
         tags_spec = ('get_bucket_tagging', 'TagSet[]',
                      'Bucket', 'id')
 
-    def __init__(self, client, data, query=None):
-        super(Bucket, self).__init__(client, data, query)
+    def __init__(self, client, data, config, query=None):
+        super(Bucket, self).__init__(client, data, config, query)
         self._data = data
         self._keys = []
 

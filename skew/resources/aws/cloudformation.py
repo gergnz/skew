@@ -47,8 +47,8 @@ class Stack(AWSResource):
         date = 'CreationTime'
         dimension = None
 
-    def __init__(self, client, data, query=None):
-        super(Stack, self).__init__(client, data, query)
+    def __init__(self, client, data, config, query=None):
+        super(Stack, self).__init__(client, data, config, query)
         self._data = data
         self._resources = []
 

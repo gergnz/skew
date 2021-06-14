@@ -68,8 +68,8 @@ class LogGroup(AWSResource):
         date = 'creationTime'
         dimension = 'logGroupName'
 
-    def __init__(self, client, data, query=None):
-        super(LogGroup, self).__init__(client, data, query)
+    def __init__(self, client, data, config, query=None):
+        super(LogGroup, self).__init__(client, data, config, query)
         self._data = data
         self._keys = []
         self._id = data['logGroupName']

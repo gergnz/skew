@@ -47,8 +47,8 @@ class Certificate(AWSResource):
     def arn(self):
         return self.data['CertificateArn']
 
-    def __init__(self, client, data, query=None):
-        super(Certificate, self).__init__(client, data, query)
+    def __init__(self, client, data, config, query=None):
+        super(Certificate, self).__init__(client, data, config, query)
 
         self._id = data['CertificateArn']
 

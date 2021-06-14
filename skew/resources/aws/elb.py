@@ -41,8 +41,8 @@ class LoadBalancer(AWSResource):
         tags_spec = ('describe_tags', 'TagDescriptions[].Tags[]',
                      'LoadBalancerNames', 'id')
 
-    def __init__(self, client, data, query=None):
-        super(LoadBalancer, self).__init__(client, data, query)
+    def __init__(self, client, data, config, query=None):
+        super(LoadBalancer, self).__init__(client, data, config, query)
         self._id = data['LoadBalancerName']
 
         # add addition attribute data

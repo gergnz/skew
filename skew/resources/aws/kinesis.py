@@ -31,7 +31,7 @@ class Stream(AWSResource):
         tags_spec = ('list_tags_for_stream', 'Tags[]',
                      'StreamName', 'id')
 
-    def __init__(self, client, data, query=None):
-        super(Stream, self).__init__(client, data, query)
+    def __init__(self, client, data, config, query=None):
+        super(Stream, self).__init__(client, data, config, query)
         self.data = {self.Meta.id: data}
         self._id = self.data[self.Meta.id]

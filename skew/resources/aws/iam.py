@@ -75,8 +75,8 @@ class User(IAMResource):
         tags_spec = ('list_user_tags', 'Tags[]',
                      'UserName', 'name')
 
-    def __init__(self, client, data, query=None):
-        super(User, self).__init__(client, data, query)
+    def __init__(self, client, data, config, query=None):
+        super(User, self).__init__(client, data, config, query)
 
         LOG.debug(data)
         # add details

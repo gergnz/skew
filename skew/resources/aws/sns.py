@@ -43,8 +43,8 @@ class Topic(AWSResource):
     def arn(self):
         return self.data.get('TopicArn')
 
-    def __init__(self, client, data, query=None):
-        super(Topic, self).__init__(client, data, query)
+    def __init__(self, client, data, config, query=None):
+        super(Topic, self).__init__(client, data, config, query)
 
         self._id = data['TopicArn'].split(':', 5)[5]
 
@@ -83,8 +83,8 @@ class Subscription(AWSResource):
 
         return [r for r in resources if r.id not in cls.invalid_arns]
 
-    def __init__(self, client, data, query=None):
-        super(Subscription, self).__init__(client, data, query)
+    def __init__(self, client, data, config, query=None):
+        super(Subscription, self).__init__(client, data, config, query)
 
         if data['SubscriptionArn'] in self.invalid_arns:
             self._id = 'PendingConfirmation'

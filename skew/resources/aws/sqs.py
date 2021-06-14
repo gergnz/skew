@@ -30,8 +30,8 @@ class Queue(AWSResource):
         dimension = 'QueueName'
         tags_spec = ('list_queue_tags', 'Tags', 'QueueUrl', 'name')
 
-    def __init__(self, client, data, query=None):
-        super(Queue, self).__init__(client, data, query)
+    def __init__(self, client, data, config, query=None):
+        super(Queue, self).__init__(client, data, config, query)
         self.data = {self.Meta.id: data,
                      'QueueName': data.split('/')[-1]}
         self._id = self.data['QueueName']
