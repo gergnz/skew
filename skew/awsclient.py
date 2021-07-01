@@ -18,6 +18,7 @@ import time
 import datetime
 import jmespath
 import boto3
+from botocore.config import Config
 from botocore.exceptions import ClientError
 
 from skew.config import get_config
@@ -120,6 +121,7 @@ class AWSClient(object):
             elif self.placebo_mode == 'playback':
                 pill.playback()
         return session.client(self.service_name,
+                              config=Config(connect_timeout=5, read_timeout=60, retries={'max_attempts': 30, 'mode': 'standard'}),
                               region_name=self.region_name if self.region_name else None)
 
     def call(self, op_name, query=None, **kwargs):
