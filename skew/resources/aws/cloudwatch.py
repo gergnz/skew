@@ -49,8 +49,6 @@ class LogGroup(AWSResource):
         type = 'log-group'
         enum_spec = ('describe_log_groups', 'logGroups[]', None)
         attr_spec = [
-            ('describe_log_streams', 'logGroupName',
-             'logStreams', 'logStreams'),
             ('describe_metric_filters', 'logGroupName',
              'metricFilters', 'metricFilters'),
             ('describe_subscription_filters', 'logGroupName',
