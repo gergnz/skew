@@ -95,6 +95,10 @@ class Subscription(AWSResource):
 
         detail_op, param_name, detail_path = self.Meta.detail_spec
         params = {param_name: data['SubscriptionArn']}
+        prev_data = data
         data = client.call(detail_op, **params)
+        if not data:
+            data['Attributes'] = {}
+            data['Attributes']['SubscriptionArn'] = prev_data['SubscriptionArn']
 
         self.data = jmespath.search(detail_path, data)

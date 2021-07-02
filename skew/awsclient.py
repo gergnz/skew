@@ -174,6 +174,8 @@ class AWSClient(object):
                         done = True
                     elif 'NoSuchTagSet' in str(e):
                         done = True
+                    elif 'Topic does not exist' in str(e):
+                        done = True
                 except Exception:
                     done = True
         if query:
